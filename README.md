@@ -1,173 +1,184 @@
-Offline-First Notes App (Sync Queue System)
-📌 Overview
+# Offline-First Notes App 📌
 
-This project is a Flutter-based offline-first notes application that demonstrates reliable data persistence, offline writes, and a queue-based sync mechanism with a backend (Firebase).
+## Overview
 
-The core focus is on offline resilience, idempotent syncing, and real-world production thinking rather than just CRUD functionality.
+This project is a Flutter-based offline-first notes application that demonstrates reliable data persistence, offline writes, and a queue-based sync mechanism with a backend (Firebase). The core focus is on offline resilience, idempotent syncing, and real-world production thinking rather than just CRUD functionality.
 
-🚀 Features
+---
+
+## 🚀 Features
 
 The app allows users to:
 
-Create notes while offline
-Save and delete notes without an internet connection
-Store all changes locally in a persistent queue until sync is triggered
-Sync data with the cloud only when internet is available and the user taps “Sync Now”
-Automatically reflect cached notes instantly (local-first UX)
-Ensure safe and reliable syncing using a queue-based system with idempotency keys
-Prevent duplicate writes during retries
-🧠 Core Architecture
-Local-First Storage
+- Create notes while offline
+- Save and delete notes without an internet connection
+- Store all changes locally in a persistent queue until sync is triggered
+- Sync data with the cloud only when internet is available and the user taps **"Sync Now"**
+- Automatically reflect cached notes instantly (local-first UX)
+- Ensure safe and reliable syncing using a queue-based system with idempotency keys
+- Prevent duplicate writes during retries
 
-Hive is used for offline persistence
-All notes are immediately stored locally
-UI always reads from local storage first
+---
 
-Sync Queue System
+## 🧠 Core Architecture
 
-Every offline action (add/save/delete) is stored in a queue
-Each action has an idempotency key
-Queue persists across app restarts
+### Local-First Storage
+- Hive is used for offline persistence
+- All notes are immediately stored locally
+- UI always reads from local storage first
 
-Manual Sync Trigger
+### Sync Queue System
+- Every offline action (add/save/delete) is stored in a queue
+- Each action has an idempotency key
+- Queue persists across app restarts
 
+### Manual Sync Trigger
 Sync happens only when:
+- Internet is available
+- User clicks **Sync Now**
+- Prevents uncontrolled background syncing
 
-Internet is available
-User clicks Sync Now
+### Retry Handling
+- Failed sync operations remain in queue
+- Retry is handled safely without duplicate writes
 
-Prevents uncontrolled background syncing
+### Conflict Strategy
+- **Last Write Wins (LWW)** — simplest and most consistent approach for this scope
 
-Retry Handling
+---
 
-Failed sync operations remain in queue
-Retry is handled safely without duplicate writes
+## 📡 Offline + Sync Behavior
 
-Conflict Strategy
+### Scenario 1: Online Usage
+1. Notes added → instantly saved locally
+2. Sync button → pushes all changes to Firebase
+3. UI shows **"All notes synced"**
 
-Last Write Wins (LWW)
-Simplest and most consistent approach for this assignment scope
+### Scenario 2: Offline Usage
+1. Notes added without internet → stored locally
+2. Queue increases (pending sync)
+3. UI shows **"No internet — will sync when online"**
 
-📡 Offline + Sync Behavior
-Scenario 1: Online usage
+### Scenario 3: Sync After Reconnection
+1. Internet restored + **Sync Now** clicked
+2. Queue processed successfully
+3. All notes synced to cloud
 
-Notes added → instantly saved locally
-Sync button → pushes all changes to Firebase
-UI shows "All notes synced"
+---
 
-Scenario 2: Offline usage
+## 📸 Verification Evidence
 
-Notes added without internet → stored locally
-Queue increases (pending sync)
-UI shows "No internet — will sync when online"
+| # | Description |
+|---|-------------|
+| SS-1 | [Notes added online → pending sync state](View%20Screenshot) |
+| SS-2 | [Sync successful with internet](View%20Screenshot) |
+| SS-3 | [Offline note added + sync attempt (no internet error)](View%20Screenshot) |
+| SS-4 | [Reconnected + successful sync](View%20Screenshot) |
 
-Scenario 3: Sync after reconnection
+**Screen recording also included.**
 
-Internet restored + Sync Now clicked
-Queue processed successfully
-All notes synced to cloud
+---
 
-📸 Verification Evidence
-📸 Verification Evidence (Screenshots)
-SS-1: Notes added online → pending sync state
-View Screenshot
-SS-2: Sync successful with internet
-View Screenshot
-SS-3: Offline note added + sync attempt (no internet error)
-View Screenshot
-SS-4: Reconnected + successful sync
-View Screenshot
-📹 Screen recording also included :
-⚠️ Edge Cases Handled
+## ⚠️ Edge Cases Handled
 
-No internet during sync → graceful failure message
-App restart → queue persists
-Duplicate sync attempts → prevented using idempotency key
-Empty note validation
-Safe setState handling after async calls
+- No internet during sync → graceful failure message
+- App restart → queue persists
+- Duplicate sync attempts → prevented using idempotency key
+- Empty note validation
+- Safe `setState` handling after async calls
 
-🧪 Testing & Logs
+---
+
+## 🧪 Testing & Logs
 
 Debug logs used for:
+- Queue size tracking
+- Sync success/failure
+- Offline actions tracking
 
-Queue size tracking
-Sync success/failure
-Offline actions tracking
-📹 Logs / Evidence
+| Log | Description |
+|-----|-------------|
+| log1 | [log1] |
+| log2 | [log2] |
 
-log1: Sync Demo Video 1
-log2: Sync Demo Video 2
+---
 
-🤖 AI Prompt Log
-🤖 AI Prompt Log (Realistic Iteration History)
+## 🤖 AI Prompt Log
 
-Prompt:
-I am building a Flutter offline-first notes app. I need local storage + sync to Firebase when internet is available. Suggest architecture.
+> Realistic iteration history of prompts used during development.
 
-Key response summary: Suggested Hive for local storage, Firebase for backend, and queue-based sync system with idempotency keys
-Decision: Accepted with minor modifications
-Why: Matched offline-first requirement and scalable structure
+**Prompt 1:** I am building a Flutter offline-first notes app. I need local storage + sync to Firebase when internet is available. Suggest architecture.
+- **Response summary:** Suggested Hive for local storage, Firebase for backend, and queue-based sync system with idempotency keys
+- **Decision:** Accepted with minor modifications
+- **Why:** Matched offline-first requirement and scalable structure
 
-2) Prompt:
+**Prompt 2:** How do I ensure offline actions (add/save/delete) don't get lost and sync safely later?
+- **Response summary:** Recommended implementing a persistent sync queue with actions stored in Hive and processed later
+- **Decision:** Accepted
+- **Why:** Solves durability and offline write reliability
 
-How do I ensure offline actions (add/save/delete) don’t get lost and sync safely later?
+**Prompt 3:** I am getting duplicate writes in Firebase when retrying sync. How do I fix it?
+- **Response summary:** Suggested using idempotency keys per action and ensuring backend ignores duplicates
+- **Decision:** Accepted
+- **Why:** Prevents duplicate writes during retries and re-sync
 
-Key response summary: Recommended implementing a persistent sync queue with actions stored in Hive and processed later
-Decision: Accepted
-Why: Solves durability and offline write reliability
+**Prompt 4:** Improve UI so users clearly understand sync status (offline, pending, synced)
+- **Response summary:** Added UI indicators like pending count, sync badge, and status labels per note
+- **Decision:** Modified and partially accepted
+- **Why:** Improved UX clarity but simplified some design suggestions
 
-3) Prompt:
+**Prompt 5:** Handle no internet case properly when user clicks Sync Now
+- **Response summary:** Added connectivity check + snackbar message: "No internet — will sync automatically when connected"
+- **Decision:** Accepted
+- **Why:** Required for real-world offline behavior and better UX feedback
 
-I am getting duplicate writes in Firebase when retrying sync. How do I fix it?
+---
 
-Key response summary: Suggested using idempotency keys per action and ensuring backend ignores duplicates
-Decision: Accepted
-Why: Prevents duplicate writes during retries and re-sync
+## 📦 Tech Stack
 
-4) Prompt:
+| Technology | Purpose |
+|------------|---------|
+| Flutter | UI framework |
+| Hive | Local offline storage |
+| Firebase | Backend sync |
+| Dart | Programming language |
 
-Improve UI so users clearly understand sync status (offline, pending, synced)
+---
 
-Key response summary: Added UI indicators like pending count, sync badge, and status labels per note
-Decision: Modified and partially accepted
-Why: Improved UX clarity but simplified some design suggestions
+## ⚖️ Tradeoffs
 
-5) Prompt:
+- Used **manual sync** instead of real-time sync for better control
+- Chose **Last Write Wins** instead of complex conflict resolution
+- **Simple retry logic** instead of exponential backoff (scope constraint)
 
-Handle no internet case properly when user clicks Sync Now
+---
 
-Key response summary: Added connectivity check + snackbar message: “No internet — will sync automatically when connected”
-Decision: Accepted
-Why: Required for real-world offline behavior and better UX feedback
+## 🔮 Future Improvements
 
-📦 Tech Stack
+- Background auto-sync when internet returns
+- Better conflict resolution (merge-based sync)
+- Encryption for offline data
+- Unit tests for queue + idempotency
+- Pagination for large note lists
 
-Flutter
-Hive (Local storage)
-Firebase (Backend sync)
-Dart
+---
 
-⚖️ Tradeoffs
+## 📌 How to Run
 
-Used manual sync instead of real-time sync for better control
-Chose Last Write Wins instead of complex conflict resolution
-Simple retry logic instead of exponential backoff (scope constraint)
+```bash
+git clone <repo-url>
+cd offline_notes_app
+flutter pub get
+flutter run
+```
 
-🔮 Future Improvements
+---
 
-Background auto-sync when internet returns
-Better conflict resolution (merge-based sync)
-Encryption for offline data
-Unit tests for queue + idempotency
-Pagination for large note lists
-
-📌 How to Run
-git clone cd offline_notes_app flutter pub get flutter run
-🏁 Summary
+## 🏁 Summary
 
 This project demonstrates a real-world offline-first architecture with:
 
-Persistent local storage
-Reliable sync queue
-Idempotent operations
-Clear UX for offline states
+- ✅ Persistent local storage
+- ✅ Reliable sync queue
+- ✅ Idempotent operations
+- ✅ Clear UX for offline state
