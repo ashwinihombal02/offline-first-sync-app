@@ -85,27 +85,42 @@ Offline actions tracking
 - log2: [Sync Demo Video 2](https://drive.google.com/file/d/1W07aYdl9ZgXn-K2qYDG50Du2X3PU6lrV/view?usp=drive_link)
 
 🤖 AI Prompt Log
-Prompt 1:
+🤖 AI Prompt Log (Realistic Iteration History)
+1) Prompt:
 
-Build an offline-first Flutter notes app with Hive and Firebase sync queue
+I am building a Flutter offline-first notes app. I need local storage + sync to Firebase when internet is available. Suggest architecture.
 
-Key response summary: Designed queue-based sync architecture with Hive + Firebase
+Key response summary: Suggested Hive for local storage, Firebase for backend, and queue-based sync system with idempotency keys
+Decision: Accepted with minor modifications
+Why: Matched offline-first requirement and scalable structure
+2) Prompt:
+
+How do I ensure offline actions (add/save/delete) don’t get lost and sync safely later?
+
+Key response summary: Recommended implementing a persistent sync queue with actions stored in Hive and processed later
 Decision: Accepted
-Why: Matched offline-first requirement
-Prompt 2:
+Why: Solves durability and offline write reliability
+3) Prompt:
 
-Improve UI to show sync status clearly and avoid confusion
+I am getting duplicate writes in Firebase when retrying sync. How do I fix it?
 
-Key response summary: Added sync badges, pending indicators, and cleaner UI layout
-Decision: Modified
-Why: Improved UX clarity for offline/online states
-Prompt 3:
-
-Handle no internet case with proper user feedback
-
-Key response summary: Added connectivity check and snackbar fallback message
+Key response summary: Suggested using idempotency keys per action and ensuring backend ignores duplicates
 Decision: Accepted
-Why: Required for real-world offline behavior
+Why: Prevents duplicate writes during retries and re-sync
+4) Prompt:
+
+Improve UI so users clearly understand sync status (offline, pending, synced)
+
+Key response summary: Added UI indicators like pending count, sync badge, and status labels per note
+Decision: Modified and partially accepted
+Why: Improved UX clarity but simplified some design suggestions
+5) Prompt:
+
+Handle no internet case properly when user clicks Sync Now
+
+Key response summary: Added connectivity check + snackbar message: “No internet — will sync automatically when connected”
+Decision: Accepted
+Why: Required for real-world offline behavior and better UX feedback
 📦 Tech Stack
 Flutter
 Hive (Local storage)
