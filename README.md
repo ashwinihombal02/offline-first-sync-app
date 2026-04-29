@@ -1,16 +1,136 @@
-# offline_first_sync_queue
+Offline-First Notes App (Sync Queue System)
+📌 Overview
 
-A new Flutter project.
+This project is a Flutter-based offline-first notes application that demonstrates reliable data persistence, offline writes, and a queue-based sync mechanism with a backend (Firebase).
 
-## Getting Started
+The core focus is on offline resilience, idempotent syncing, and real-world production thinking rather than just CRUD functionality.
 
-This project is a starting point for a Flutter application.
+🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+The app allows users to:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Create notes while offline
+Save and delete notes without an internet connection
+Store all changes locally in a persistent queue until sync is triggered
+Sync data with the cloud only when internet is available and the user taps “Sync Now”
+Automatically reflect cached notes instantly (local-first UX)
+Ensure safe and reliable syncing using a queue-based system with idempotency keys
+Prevent duplicate writes during retries
+🧠 Core Architecture
+1. Local-First Storage
+Hive is used for offline persistence
+All notes are immediately stored locally
+UI always reads from local storage first
+2. Sync Queue System
+Every offline action (add/save/delete) is stored in a queue
+Each action has an idempotency key
+Queue persists across app restarts
+3. Manual Sync Trigger
+Sync happens only when:
+Internet is available
+User clicks Sync Now
+Prevents uncontrolled background syncing
+4. Retry Handling
+Failed sync operations remain in queue
+Retry is handled safely without duplicate writes
+5. Conflict Strategy
+Last Write Wins (LWW)
+Simplest and most consistent approach for this assignment scope
+📡 Offline + Sync Behavior
+Scenario 1: Online usage
+Notes added → instantly saved locally
+Sync button → pushes all changes to Firebase
+UI shows "All notes synced"
+Scenario 2: Offline usage
+Notes added without internet → stored locally
+Queue increases (pending sync)
+UI shows "No internet — will sync when online"
+Scenario 3: Sync after reconnection
+Internet restored + Sync Now clicked
+Queue processed successfully
+All notes synced to cloud
+📸 Verification Evidence
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📸 Verification Evidence (Screenshots)
+
+- **SS-1: Notes added online → pending sync state**  
+  [View Screenshot](https://drive.google.com/file/d/1_rlkLUTTmRyYwindlGtWMIr2iKHeAmwT/view?usp=drive_link)
+
+- **SS-2: Sync successful with internet**  
+  [View Screenshot](https://drive.google.com/file/d/1IoX6qLTBtiMJX94L_NwQmWB7xVK_9yVG/view?usp=drive_link)
+
+- **SS-3: Offline note added + sync attempt (no internet error)**  
+  [View Screenshot](https://drive.google.com/file/d/1tXf1-uJ8IcpXAv86_sShFpWSKckcDsMD/view?usp=drive_link)
+
+- **SS-4: Reconnected + successful sync**  
+  [View Screenshot](https://drive.google.com/file/d/1RS1GrIW3_2NG1lle7pkcrNj56qFEuAeo/view?usp=drive_link)
+
+📹 Screen recording also included : 
+
+⚠️ Edge Cases Handled
+No internet during sync → graceful failure message
+App restart → queue persists
+Duplicate sync attempts → prevented using idempotency key
+Empty note validation
+Safe setState handling after async calls
+🧪 Testing & Logs
+Debug logs used for:
+Queue size tracking
+Sync success/failure
+Offline actions tracking
+
+## 📹 Logs / Evidence
+
+- log1: [Sync Demo Video 1](https://drive.google.com/file/d/1C30j15jrbZoyQXHl2rRBneVQxXwxIr0V/view?usp=drive_link)  
+- log2: [Sync Demo Video 2](https://drive.google.com/file/d/1W07aYdl9ZgXn-K2qYDG50Du2X3PU6lrV/view?usp=drive_link)
+
+🤖 AI Prompt Log
+Prompt 1:
+
+Build an offline-first Flutter notes app with Hive and Firebase sync queue
+
+Key response summary: Designed queue-based sync architecture with Hive + Firebase
+Decision: Accepted
+Why: Matched offline-first requirement
+Prompt 2:
+
+Improve UI to show sync status clearly and avoid confusion
+
+Key response summary: Added sync badges, pending indicators, and cleaner UI layout
+Decision: Modified
+Why: Improved UX clarity for offline/online states
+Prompt 3:
+
+Handle no internet case with proper user feedback
+
+Key response summary: Added connectivity check and snackbar fallback message
+Decision: Accepted
+Why: Required for real-world offline behavior
+📦 Tech Stack
+Flutter
+Hive (Local storage)
+Firebase (Backend sync)
+Dart
+⚖️ Tradeoffs
+Used manual sync instead of real-time sync for better control
+Chose Last Write Wins instead of complex conflict resolution
+Simple retry logic instead of exponential backoff (scope constraint)
+🔮 Future Improvements
+Background auto-sync when internet returns
+Better conflict resolution (merge-based sync)
+Encryption for offline data
+Unit tests for queue + idempotency
+Pagination for large note lists
+📌 How to Run
+git clone <repo-url>
+cd offline_notes_app
+flutter pub get
+flutter run
+🏁 Summary
+
+This project demonstrates a real-world offline-first architecture with:
+
+Persistent local storage
+Reliable sync queue
+Idempotent operations
+Clear UX for offline states
