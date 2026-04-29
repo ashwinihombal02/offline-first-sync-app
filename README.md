@@ -70,13 +70,13 @@ Sync happens only when:
 
 | # | Description |
 |---|-------------|
-| SS-1 | [Notes added online → pending sync state](View%20Screenshot) |
-| SS-2 | [Sync successful with internet](View%20Screenshot) |
-| SS-3 | [Offline note added + sync attempt (no internet error)](View%20Screenshot) |
-| SS-4 | [Reconnected + successful sync](View%20Screenshot) |
+| SS-1 | [Notes added online → pending sync state](https://drive.google.com/file/d/1tSmM2-NKYqHgDAV7sPfvHlnoQIVMkfYU/view?usp=drive_link) |
+| SS-2 | [Sync successful with internet](https://drive.google.com/file/d/1IoX6qLTBtiMJX94L_NwQmWB7xVK_9yVG/view?usp=drive_link) |
+| SS-3 | [Offline note added + sync attempt (no internet error)](https://drive.google.com/file/d/1tXf1-uJ8IcpXAv86_sShFpWSKckcDsMD/view?usp=drive_link) |
+| SS-4 | [Reconnected + successful sync](https://drive.google.com/file/d/1RS1GrIW3_2NG1lle7pkcrNj56qFEuAeo/view?usp=drive_link) |
 
 **Screen recording also included.**
-
+[https://drive.google.com/file/d/1NaDSIOM71Gi8ecmYxOq5DxwQRG7gvuMm/view?usp=drive_link]
 ---
 
 ## ⚠️ Edge Cases Handled
@@ -98,8 +98,8 @@ Debug logs used for:
 
 | Log | Description |
 |-----|-------------|
-| log1 | [log1] |
-| log2 | [log2] |
+| log1 | [https://drive.google.com/file/d/1C30j15jrbZoyQXHl2rRBneVQxXwxIr0V/view?usp=drive_link] |
+| log2 | [https://drive.google.com/file/d/1W07aYdl9ZgXn-K2qYDG50Du2X3PU6lrV/view?usp=drive_link] |
 
 ---
 
